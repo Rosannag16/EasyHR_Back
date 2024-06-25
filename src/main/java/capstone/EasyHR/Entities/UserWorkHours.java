@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @Entity
-public class Permessi {
+public class UserWorkHours {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,11 +17,14 @@ public class Permessi {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "data_inizio")
-    private LocalDate dataInizio;
+    @Column(name = "data")
+    private String dataLavoro;
 
-    @Column(name = "data_fine")
-    private LocalDate dataFine;
+    @Column(name = "inizio_ora_lavoro")
+    private LocalTime inizioOraLavoro;
 
-    private String motivo;
+    @Column(name = "fine_ora_lavoro")
+    private LocalTime fineOraLavoro;
+
+
 }

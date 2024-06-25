@@ -5,13 +5,12 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
 @Entity
-public class Ferie {
+@Data
+public class Permesso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -26,4 +25,7 @@ public class Ferie {
     private String motivo;
 
     private String stato; // Esempi: "IN_ATTESA", "APPROVATA", "RESPINTA"
+
+
 }
+

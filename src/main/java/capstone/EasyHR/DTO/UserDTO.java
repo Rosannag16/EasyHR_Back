@@ -25,9 +25,5 @@ public class UserDTO {
     @NotBlank(message = "cognome non può essere null, vuota, o composta da soli spazi")
     private String cognome;
 
-    private LocalTime inizioOraLavoro;
-    private LocalTime fineOraLavoro;
-    private LocalDate data;
 
-//    private boolean isAdmin; // Aggiunto campo per indicare se l'utente è un amministratore
 }

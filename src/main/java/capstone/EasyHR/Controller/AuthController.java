@@ -1,12 +1,8 @@
 package capstone.EasyHR.Controller;
 
-import capstone.EasyHR.DTO.AuthDataDto;
-import capstone.EasyHR.DTO.LoginResponseDto;
-import capstone.EasyHR.DTO.UserDTO;
-import capstone.EasyHR.DTO.UserLoginDTO;
+import capstone.EasyHR.DTO.*;
 import capstone.EasyHR.Enums.Ruolo;
-import capstone.EasyHR.Service.AuthService;
-import capstone.EasyHR.Service.UserService;
+import capstone.EasyHR.Service.*;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +12,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth") // Mapping principale mantenuto come /auth
 public class AuthController {
 
     @Autowired
@@ -28,7 +26,17 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
+    @Autowired
+    private FerieService ferieService;
+
+    @Autowired
+    private PermessoService permessoService;
+
+    @Autowired
+    private UserWorkHoursService userWorkHoursService;
+
+
+    @PostMapping("/register") // Endpoint specificato come /request/register
     public ResponseEntity<Object> register(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws BadRequestException {
         if (bindingResult.hasErrors()) {
             throw new BadRequestException(bindingResult.getAllErrors().stream()
@@ -36,20 +44,13 @@ public class AuthController {
                     .reduce("", (s, s2) -> s + " " + s2));
         }
 
-        // Esegui la logica di registrazione
         String userId = userService.saveUtente(userDTO, Ruolo.USER);
 
-        // Costruisci una risposta JSON con un messaggio di conferma
         String successMessage = "User with id=" + userId + " correctly saved";
-
-        // Restituisci una ResponseEntity con il messaggio e lo stato OK (200)
         return ResponseEntity.status(HttpStatus.CREATED).body(successMessage);
     }
 
-
-
-
-    @PostMapping("/login")
+    @PostMapping("/login") // Endpoint specificato come /request/login
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Validated UserLoginDTO userLoginDTO, BindingResult bindingResult) throws BadRequestException {
         if (bindingResult.hasErrors()) {
             throw new BadRequestException(bindingResult.getAllErrors().stream()
@@ -58,22 +59,19 @@ public class AuthController {
         }
 
         AuthDataDto authDataDto = authService.authenticateUtenteAndCreateToken(userLoginDTO);
-        String successMessage = "Utente loggato con successo!"; // Messaggio di successo
+        String successMessage = "Utente loggato con successo!";
 
-        // Costruisci la risposta da restituire
         LoginResponseDto response = new LoginResponseDto(successMessage, authDataDto);
-
-        // Restituisci la risposta come ResponseEntity con stato OK
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/users") // Endpoint specificato come /request/users
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    @DeleteMapping("/users/{userId}")
+    @DeleteMapping("/users/{userId}") // Endpoint specificato come /request/users/{userId}
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         try {
             userService.deleteUserById(userId);
@@ -82,7 +80,4 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'eliminazione dell'utente");
         }
     }
-
-
-    // Altri metodi già presenti nel tuo controller per register e login...
 }

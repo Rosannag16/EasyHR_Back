@@ -1,6 +1,5 @@
 package capstone.EasyHR.Service;
 
-import capstone.EasyHR.DTO.UpdateUserWorkHoursDTO;
 import capstone.EasyHR.DTO.UserDTO;
 import capstone.EasyHR.Entities.User;
 import capstone.EasyHR.Enums.Ruolo;
@@ -11,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import capstone.EasyHR.Repository.UserWorkHoursRepository;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserWorkHoursRepository userWorkHoursRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -76,21 +80,11 @@ public class UserService implements UserDetailsService {
         userDTO.setPassword(user.getPassword());
         userDTO.setNome(user.getNome());
         userDTO.setCognome(user.getCognome());
-        userDTO.setInizioOraLavoro(user.getInizioOraLavoro());
-        userDTO.setFineOraLavoro(user.getFineOraLavoro());
-        // Altri campi se presenti
+
 
         return userDTO;
     }
 
-    public User updateUserWorkHours(Integer userId, UpdateUserWorkHoursDTO updateUserWorkHoursDTO) {
-        User user = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        user.setDataLavoro(updateUserWorkHoursDTO.getData()); // Imposta la data di lavoro
-        user.setInizioOraLavoro(updateUserWorkHoursDTO.getInizioOraLavoro());
-        user.setFineOraLavoro(updateUserWorkHoursDTO.getFineOraLavoro());
 
-        return userRepository.save(user); // Salva e restituisce l'utente aggiornato
-    }
 }

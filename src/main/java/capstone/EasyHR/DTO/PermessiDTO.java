@@ -6,8 +6,11 @@ import java.time.LocalDate;
 
 @Data
 public class PermessiDTO {
+    private Long id;
     private Long userId;
     private LocalDate dataInizio;
     private LocalDate dataFine;
     private String motivo;
+    private String stato; // Campo stato aggiunto per rappresentare lo stato della richiesta
+
 }

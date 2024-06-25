@@ -7,8 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,21 +30,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Ruolo ruolo;
 
-    @Column(name = "data_lavoro")
-    private LocalDate dataLavoro; // Data di lavoro
-
-    @Column(name = "inizio_ora_lavoro")
-    private LocalTime inizioOraLavoro;
-
-    @Column(name = "fine_ora_lavoro")
-    private LocalTime fineOraLavoro;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Ferie> ferieList;
 
     // Relazione con le richieste di permessi
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Permessi> permessiList;
+    private List<Permesso> permessoList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

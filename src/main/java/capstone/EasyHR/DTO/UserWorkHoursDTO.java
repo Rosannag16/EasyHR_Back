@@ -1,15 +1,14 @@
 package capstone.EasyHR.DTO;
 
-
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
-public class UpdateUserWorkHoursDTO {
-    private LocalDate data;
+public class UserWorkHoursDTO {
+    private LocalDate dataLavoro;
     private LocalTime inizioOraLavoro;
     private LocalTime fineOraLavoro;
-}
 
+}
