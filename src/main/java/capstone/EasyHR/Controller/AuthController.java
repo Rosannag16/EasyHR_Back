@@ -71,13 +71,15 @@ public class AuthController {
         return ResponseEntity.ok(users);
     }
 
-    @DeleteMapping("/users/{userId}") // Endpoint specificato come /request/users/{userId}
+    @DeleteMapping("/users/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         try {
             userService.deleteUserById(userId);
             return ResponseEntity.ok("Utente eliminato con successo");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato con ID: " + userId);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'eliminazione dell'utente");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'eliminazione dell'utente con ID: " + userId);
         }
     }
 }

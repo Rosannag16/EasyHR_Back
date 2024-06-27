@@ -66,7 +66,11 @@ public class UserService implements UserDetailsService {
     }
 
     public void deleteUserById(Long userId) {
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato con ID: " + userId));
+
+        // Esegui l'eliminazione dell'utente
+        userRepository.delete(user);
     }
 
     public Optional<User> findById(Long id) {

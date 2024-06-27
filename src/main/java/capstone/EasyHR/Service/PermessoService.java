@@ -1,4 +1,5 @@
 package capstone.EasyHR.Service;
+
 import capstone.EasyHR.DTO.PermessiDTO;
 import capstone.EasyHR.Entities.Permesso;
 import capstone.EasyHR.Repository.PermessiRepository;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
 public class PermessoService {
 
@@ -18,10 +18,9 @@ public class PermessoService {
 
     public List<PermessiDTO> getPermessiByUserId(Long userId) {
         List<Permesso> permessoList = permessoRepository.findByUserId(userId);
-        List<PermessiDTO> permessiDTOList = permessoList.stream()
+        return permessoList.stream()
                 .map(this::convertToPermessiDTO)
                 .collect(Collectors.toList());
-        return permessiDTOList;
     }
 
     public List<PermessiDTO> getPendingPermessiRequests() {
@@ -31,25 +30,11 @@ public class PermessoService {
     }
 
     public void approvePermessiRequest(Long permessoId) {
-        Optional<Permesso> permessoOptional = permessoRepository.findById(permessoId);
-        if (permessoOptional.isPresent()) {
-            Permesso permesso = permessoOptional.get();
-            permesso.setStato("APPROVATO");
-            permessoRepository.save(permesso);
-        } else {
-            throw new IllegalArgumentException("Permesso request not found with id: " + permessoId);
-        }
+        setStatus(permessoId, "APPROVATO");
     }
 
     public void rejectPermessiRequest(Long permessoId) {
-        Optional<Permesso> permessoOptional = permessoRepository.findById(permessoId);
-        if (permessoOptional.isPresent()) {
-            Permesso permesso = permessoOptional.get();
-            permesso.setStato("RIFIUTATO");
-            permessoRepository.save(permesso);
-        } else {
-            throw new IllegalArgumentException("Permesso request not found with id: " + permessoId);
-        }
+        setStatus(permessoId, "RIFIUTATO");
     }
 
     public List<PermessiDTO> getAllPermessi() {
@@ -81,4 +66,18 @@ public class PermessoService {
         return permessiDTO;
     }
 
+    public void deletePermessiRequest(Long permessoId) {
+        // Implementa la logica per eliminare una richiesta di permessi dal repository
+        Optional<Permesso> permessoOptional = permessoRepository.findById(permessoId);
+        if (permessoOptional.isPresent()) {
+            permessoRepository.deleteById(permessoId);
+        } else {
+            throw new IllegalArgumentException("Permessi request with id " + permessoId + " not found");
+        }
+    }
+
+    // Metodo per aggiornare lo stato di un permesso
+    public void updatePermessiStatus(Long permessoId, String newStatus) {
+        setStatus(permessoId, newStatus);
+    }
 }

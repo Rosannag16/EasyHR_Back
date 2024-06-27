@@ -12,19 +12,22 @@ import java.util.stream.Collectors;
 
 
 
-
 @Service
 public class FerieService {
+
+
+
 
     @Autowired
     private FerieRepository ferieRepository;
 
+
+
     public List<FerieDTO> getFerieByUserId(Long userId) {
         List<Ferie> ferieList = ferieRepository.findByUserId(userId);
-        List<FerieDTO> ferieDTOList = ferieList.stream()
+        return ferieList.stream()
                 .map(this::convertToFerieDTO)
                 .collect(Collectors.toList());
-        return ferieDTOList;
     }
 
     public List<FerieDTO> getPendingFerieRequests() {
@@ -34,25 +37,11 @@ public class FerieService {
     }
 
     public void approveFerieRequest(Long ferieId) {
-        Optional<Ferie> ferieOptional = ferieRepository.findById(ferieId);
-        if (ferieOptional.isPresent()) {
-            Ferie ferie = ferieOptional.get();
-            ferie.setStato("APPROVATA");
-            ferieRepository.save(ferie);
-        } else {
-            throw new IllegalArgumentException("Ferie request not found with id: " + ferieId);
-        }
+        setStatus(ferieId, "APPROVATA");
     }
 
     public void rejectFerieRequest(Long ferieId) {
-        Optional<Ferie> ferieOptional = ferieRepository.findById(ferieId);
-        if (ferieOptional.isPresent()) {
-            Ferie ferie = ferieOptional.get();
-            ferie.setStato("RIFIUTATA");
-            ferieRepository.save(ferie);
-        } else {
-            throw new IllegalArgumentException("Ferie request not found with id: " + ferieId);
-        }
+        setStatus(ferieId, "RIFIUTATA");
     }
 
     public List<FerieDTO> getAllFerie() {
@@ -84,4 +73,13 @@ public class FerieService {
         return ferieDTO;
     }
 
+    public void deleteFerieRequest(Long ferieId) {
+        // Implementa la logica per eliminare una richiesta di ferie dal repository
+        Optional<Ferie> ferieOptional = ferieRepository.findById(ferieId);
+        if (ferieOptional.isPresent()) {
+            ferieRepository.deleteById(ferieId);
+        } else {
+            throw new IllegalArgumentException("Ferie request with id " + ferieId + " not found");
+        }
+    }
 }

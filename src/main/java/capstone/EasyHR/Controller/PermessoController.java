@@ -1,9 +1,7 @@
 package capstone.EasyHR.Controller;
 
-import capstone.EasyHR.DTO.FerieDTO;
 import capstone.EasyHR.DTO.PermessiDTO;
 import capstone.EasyHR.Entities.User;
-import capstone.EasyHR.Service.FerieService;
 import capstone.EasyHR.Service.PermessoService;
 import capstone.EasyHR.Service.RequestService;
 import capstone.EasyHR.Service.UserService;
@@ -13,16 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-
-
+import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
-public class RequestController {
+public class PermessoController {
 
     @Autowired
     private RequestService requestService;
@@ -31,54 +24,17 @@ public class RequestController {
     private UserService userService;
 
     @Autowired
-    private FerieService ferieService;
-
-    @Autowired
     private PermessoService permessoService;
-
-    @GetMapping("/request/ferie")
-    public ResponseEntity<List<FerieDTO>> getFerieByUserId(@RequestParam Long userId) {
-        List<FerieDTO> ferieDTOList = ferieService.getFerieByUserId(userId);
-        return ResponseEntity.ok(ferieDTOList);
-    }
-
-    @PostMapping("/request/ferie")
-    public ResponseEntity<Object> addFerieRequest(@RequestBody @Valid FerieDTO ferieDTO) {
-        Long userId = ferieDTO.getUserId();
-
-        Optional<User> user = userService.findById(userId);
-        if (!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized request");
-        }
-
-        ferieDTO.setUserId(user.get().getId());
-        requestService.addFerieRequest(ferieDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("message", "Ferie request created"));
-    }
-
-    @PostMapping("/request/ferie/approve")
-    public ResponseEntity<Object> approveFerieRequest(@RequestParam Long ferieId) {
-        try {
-            ferieService.approveFerieRequest(ferieId);
-            return ResponseEntity.ok(Collections.singletonMap("message", "Ferie request approved"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", e.getMessage()));
-        }
-    }
-
-    @PostMapping("/request/ferie/reject")
-    public ResponseEntity<Object> rejectFerieRequest(@RequestParam Long ferieId) {
-        try {
-            ferieService.rejectFerieRequest(ferieId);
-            return ResponseEntity.ok(Collections.singletonMap("message", "Ferie request rejected"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", e.getMessage()));
-        }
-    }
 
     @GetMapping("/request/permessi")
     public ResponseEntity<List<PermessiDTO>> getPermessiByUserId(@RequestParam Long userId) {
         List<PermessiDTO> permessiDTOList = permessoService.getPermessiByUserId(userId);
+        return ResponseEntity.ok(permessiDTOList);
+    }
+
+    @GetMapping("/request/permessi/all")
+    public ResponseEntity<List<PermessiDTO>> getAllPermessi() {
+        List<PermessiDTO> permessiDTOList = permessoService.getAllPermessi();
         return ResponseEntity.ok(permessiDTOList);
     }
 
@@ -111,6 +67,34 @@ public class RequestController {
         try {
             permessoService.rejectPermessiRequest(permessoId);
             return ResponseEntity.ok(Collections.singletonMap("message", "Permessi request rejected"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", e.getMessage()));
+        }
+    }
+    @PutMapping("/updateStatus/{id}")
+    public ResponseEntity<Map<String, String>> updatePermessiStatus(@PathVariable Long id, @RequestBody Map<String, String> newStatus) {
+        try {
+            String status = newStatus.get("stato");
+            permessoService.updatePermessiStatus(id, status);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Stato del permesso con id " + id + " aggiornato correttamente a " + status);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Impossibile aggiornare lo stato del permesso: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
+
+
+    @DeleteMapping("/request/permessi/{id}")
+    public ResponseEntity<Object> deletePermessiRequest(@PathVariable Long id) {
+        try {
+            permessoService.deletePermessiRequest(id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Permessi request deleted successfully"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", e.getMessage()));
         }

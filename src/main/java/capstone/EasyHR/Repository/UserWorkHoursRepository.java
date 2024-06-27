@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface UserWorkHoursRepository extends JpaRepository<UserWorkHours, Long> {
     List<UserWorkHours> findByUserId(Long userId);
     Optional<UserWorkHours> findByUser(User user);
+    void deleteByUser(User user);
 }

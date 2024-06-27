@@ -31,6 +31,9 @@ public class User implements UserDetails {
     private Ruolo ruolo;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserWorkHours> workHoursList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Ferie> ferieList;
 
     // Relazione con le richieste di permessi
