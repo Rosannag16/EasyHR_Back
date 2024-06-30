@@ -11,7 +11,7 @@ public class FerieDTO {
     private LocalDate dataInizio;
     private LocalDate dataFine;
     private String motivo;
-    private String stato; // Campo stato aggiunto per rappresentare lo stato della richiesta
+    private String stato;
 }
 
 

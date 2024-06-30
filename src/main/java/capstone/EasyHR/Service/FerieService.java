@@ -10,18 +10,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-
-
 @Service
 public class FerieService {
 
-
-
-
     @Autowired
     private FerieRepository ferieRepository;
-
-
 
     public List<FerieDTO> getFerieByUserId(Long userId) {
         List<Ferie> ferieList = ferieRepository.findByUserId(userId);
@@ -30,11 +23,11 @@ public class FerieService {
                 .collect(Collectors.toList());
     }
 
-    public List<FerieDTO> getPendingFerieRequests() {
-        return ferieRepository.findByStato("IN_ATTESA").stream()
-                .map(this::convertToFerieDTO)
-                .collect(Collectors.toList());
-    }
+//    public List<FerieDTO> getPendingFerieRequests() {
+//        return ferieRepository.findByStato("IN_ATTESA").stream()
+//                .map(this::convertToFerieDTO)
+//                .collect(Collectors.toList());
+//    }
 
     public void approveFerieRequest(Long ferieId) {
         setStatus(ferieId, "APPROVATA");
@@ -81,5 +74,10 @@ public class FerieService {
         } else {
             throw new IllegalArgumentException("Ferie request with id " + ferieId + " not found");
         }
+    }
+
+    // Metodo per aggiornare lo stato di un permesso
+    public void updateFerieStatus(Long permessoId, String newStatus) {
+        setStatus(permessoId, newStatus);
     }
 }

@@ -23,11 +23,11 @@ public class PermessoService {
                 .collect(Collectors.toList());
     }
 
-    public List<PermessiDTO> getPendingPermessiRequests() {
-        return permessoRepository.findByStato("IN_ATTESA").stream()
-                .map(this::convertToPermessiDTO)
-                .collect(Collectors.toList());
-    }
+//    public List<PermessiDTO> getPendingPermessiRequests() {
+//        return permessoRepository.findByStato("IN_ATTESA").stream()
+//                .map(this::convertToPermessiDTO)
+//                .collect(Collectors.toList());
+//    }
 
     public void approvePermessiRequest(Long permessoId) {
         setStatus(permessoId, "APPROVATO");

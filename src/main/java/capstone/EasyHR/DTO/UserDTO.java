@@ -4,9 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 @Data
 public class UserDTO {
     @NotBlank(message = "username non può essere null, vuoto, o composta da soli spazi")

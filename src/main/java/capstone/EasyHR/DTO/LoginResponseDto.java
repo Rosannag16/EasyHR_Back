@@ -1,5 +1,6 @@
 package capstone.EasyHR.DTO;
 
+
 public class LoginResponseDto {
     private String message;
     private AuthDataDto authData;
@@ -9,7 +10,7 @@ public class LoginResponseDto {
         this.authData = authData;
     }
 
-    // Aggiungi getter e setter
+
     public String getMessage() {
         return message;
     }

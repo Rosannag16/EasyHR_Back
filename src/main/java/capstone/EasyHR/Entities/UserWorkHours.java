@@ -3,7 +3,7 @@ package capstone.EasyHR.Entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+
 import java.time.LocalTime;
 
 @Data

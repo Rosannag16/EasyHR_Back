@@ -26,35 +26,30 @@ public class UserWorkHoursService {
 
     @Transactional
     public UserWorkHoursDTO addUserWorkHours(Long userId, UserWorkHoursDTO userWorkHoursDTO) {
-        // Recupera l'entità utente dal repository utilizzando userId
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        // Crea una nuova entità UserWorkHours
         UserWorkHours userWorkHours = new UserWorkHours();
-        userWorkHours.setUser(user); // Imposta l'utente per l'entità UserWorkHours
-
-        // Converte e imposta i dati da UserWorkHoursDTO
+        userWorkHours.setUser(user);
         userWorkHours.setDataLavoro(String.valueOf(userWorkHoursDTO.getDataLavoro()));
         userWorkHours.setInizioOraLavoro(userWorkHoursDTO.getInizioOraLavoro());
         userWorkHours.setFineOraLavoro(userWorkHoursDTO.getFineOraLavoro());
 
-        // Salva l'entità UserWorkHours nel database
         userWorkHoursRepository.save(userWorkHours);
         return userWorkHoursDTO;
     }
-    public UserWorkHoursDTO updateUserWorkHours(Long id, UserWorkHoursDTO userWorkHoursDTO) {
-        UserWorkHours userWorkHours = userWorkHoursRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User work hours not found"));
 
-        userWorkHours.setDataLavoro(String.valueOf(userWorkHoursDTO.getDataLavoro()));
-        userWorkHours.setInizioOraLavoro(userWorkHoursDTO.getInizioOraLavoro());
-        userWorkHours.setFineOraLavoro(userWorkHoursDTO.getInizioOraLavoro());
-
-        userWorkHours = userWorkHoursRepository.save(userWorkHours);
-
-        return buildUserWorkHoursDTO(userWorkHours);
-    }
+//    public UserWorkHoursDTO updateUserWorkHours(Long id, UserWorkHoursDTO userWorkHoursDTO) {
+//        UserWorkHours userWorkHours = userWorkHoursRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("User work hours not found"));
+//
+//        userWorkHours.setDataLavoro(String.valueOf(userWorkHoursDTO.getDataLavoro()));
+//        userWorkHours.setInizioOraLavoro(userWorkHoursDTO.getInizioOraLavoro());
+//        userWorkHours.setFineOraLavoro(userWorkHoursDTO.getInizioOraLavoro());
+//
+//        userWorkHours = userWorkHoursRepository.save(userWorkHours);
+//
+//        return buildUserWorkHoursDTO(userWorkHours);
+//    }
 
     public List<UserWorkHoursDTO> getAllUserWorkHours() {
         List<UserWorkHours> userWorkHoursList = userWorkHoursRepository.findAll();
@@ -65,8 +60,7 @@ public class UserWorkHoursService {
 
     private UserWorkHoursDTO buildUserWorkHoursDTO(UserWorkHours userWorkHours) {
         UserWorkHoursDTO dto = new UserWorkHoursDTO();
-//        dto.setId(userWorkHours.getId());
-//        dto.setUser(userWorkHours.getUser().getId());
+
         dto.setDataLavoro(LocalDate.parse(userWorkHours.getDataLavoro()));
         dto.setInizioOraLavoro(LocalTime.parse(userWorkHours.getInizioOraLavoro().format(DateTimeFormatter.ofPattern("HH:mm:ss"))));
         dto.setFineOraLavoro(LocalTime.parse(userWorkHours.getFineOraLavoro().format(DateTimeFormatter.ofPattern("HH:mm:ss"))));

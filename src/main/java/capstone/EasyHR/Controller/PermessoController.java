@@ -71,6 +71,7 @@ public class PermessoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", e.getMessage()));
         }
     }
+
     @PutMapping("/updateStatus/{id}")
     public ResponseEntity<Map<String, String>> updatePermessiStatus(@PathVariable Long id, @RequestBody Map<String, String> newStatus) {
         try {

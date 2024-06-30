@@ -1,6 +1,5 @@
 package capstone.EasyHR.Controller;
 
-import capstone.EasyHR.DTO.UserDTO;
 import capstone.EasyHR.DTO.UserWorkHoursDTO;
 import capstone.EasyHR.Service.UserWorkHoursService;
 import capstone.EasyHR.Service.UserService;

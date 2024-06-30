@@ -52,22 +52,22 @@ public class RequestService {
         return permessiRepository.save(permesso);
     }
 
-    public List<Ferie> getFerieRequestsByUserId(Long userId) {
-        return ferieRepository.findByUserId(userId);
-    }
-
-    public List<Permesso> getPermessiRequestsByUserId(Long userId) {
-        return permessiRepository.findByUserId(userId);
-    }
-
-    public UserWorkHours addUserWorkHours(Long userId, UserWorkHours userWorkHours) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        userWorkHours.setUser(user);
-        return userWorkHoursRepository.save(userWorkHours);
-    }
-
-    public List<UserWorkHours> getUserWorkHoursByUserId(Long userId) {
-        return userWorkHoursRepository.findByUserId(userId);
-    }
+//    public List<Ferie> getFerieRequestsByUserId(Long userId) {
+//        return ferieRepository.findByUserId(userId);
+//    }
+//
+//    public List<Permesso> getPermessiRequestsByUserId(Long userId) {
+//        return permessiRepository.findByUserId(userId);
+//    }
+//
+//    public UserWorkHours addUserWorkHours(Long userId, UserWorkHours userWorkHours) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//        userWorkHours.setUser(user);
+//        return userWorkHoursRepository.save(userWorkHours);
+//    }
+//
+//    public List<UserWorkHours> getUserWorkHoursByUserId(Long userId) {
+//        return userWorkHoursRepository.findByUserId(userId);
+//    }
 }
