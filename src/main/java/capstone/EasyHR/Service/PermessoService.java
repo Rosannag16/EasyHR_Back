@@ -14,8 +14,9 @@ import java.util.stream.Collectors;
 public class PermessoService {
 
     @Autowired
-    private PermessiRepository permessoRepository;
+    private PermessiRepository permessoRepository; // Repository per accedere alle entità Permesso nel database
 
+    // Metodo per ottenere tutti i permessi di un utente dato l'ID dell'utente
     public List<PermessiDTO> getPermessiByUserId(Long userId) {
         List<Permesso> permessoList = permessoRepository.findByUserId(userId);
         return permessoList.stream()
@@ -23,20 +24,17 @@ public class PermessoService {
                 .collect(Collectors.toList());
     }
 
-//    public List<PermessiDTO> getPendingPermessiRequests() {
-//        return permessoRepository.findByStato("IN_ATTESA").stream()
-//                .map(this::convertToPermessiDTO)
-//                .collect(Collectors.toList());
-//    }
-
+    // Metodo per approvare una richiesta di permesso dato l'ID del permesso
     public void approvePermessiRequest(Long permessoId) {
         setStatus(permessoId, "APPROVATO");
     }
 
+    // Metodo per rifiutare una richiesta di permesso dato l'ID del permesso
     public void rejectPermessiRequest(Long permessoId) {
         setStatus(permessoId, "RIFIUTATO");
     }
 
+    // Metodo per ottenere tutti i permessi presenti nel sistema
     public List<PermessiDTO> getAllPermessi() {
         List<Permesso> permessoList = permessoRepository.findAll();
         return permessoList.stream()
@@ -44,17 +42,19 @@ public class PermessoService {
                 .collect(Collectors.toList());
     }
 
+    // Metodo per impostare lo stato di un permesso dato l'ID e lo stato specificato
     public void setStatus(Long permessoId, String status) {
         Optional<Permesso> permessoOptional = permessoRepository.findById(permessoId);
         if (permessoOptional.isPresent()) {
             Permesso permesso = permessoOptional.get();
             permesso.setStato(status);
-            permessoRepository.save(permesso);
+            permessoRepository.save(permesso); // Salva il permesso con lo stato aggiornato nel repository
         } else {
-            throw new IllegalArgumentException("Permesso request not found with id: " + permessoId);
+            throw new IllegalArgumentException("Richiesta permesso non trovata con ID: " + permessoId);
         }
     }
 
+    // Metodo privato per convertire un'entità Permesso in un DTO PermessiDTO
     private PermessiDTO convertToPermessiDTO(Permesso permesso) {
         PermessiDTO permessiDTO = new PermessiDTO();
         permessiDTO.setId(permesso.getId());
@@ -66,17 +66,17 @@ public class PermessoService {
         return permessiDTO;
     }
 
+    // Metodo per eliminare una richiesta di permesso dato l'ID del permesso
     public void deletePermessiRequest(Long permessoId) {
-        // Implementa la logica per eliminare una richiesta di permessi dal repository
         Optional<Permesso> permessoOptional = permessoRepository.findById(permessoId);
         if (permessoOptional.isPresent()) {
-            permessoRepository.deleteById(permessoId);
+            permessoRepository.deleteById(permessoId); // Elimina la richiesta di permesso dal repository
         } else {
-            throw new IllegalArgumentException("Permessi request with id " + permessoId + " not found");
+            throw new IllegalArgumentException("Richiesta permesso con ID " + permessoId + " non trovata");
         }
     }
 
-    // Metodo per aggiornare lo stato di un permesso
+    // Metodo per aggiornare lo stato di un permesso (metodo wrapper per il metodo setStatus)
     public void updatePermessiStatus(Long permessoId, String newStatus) {
         setStatus(permessoId, newStatus);
     }

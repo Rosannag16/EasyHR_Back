@@ -16,14 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
-
-
 @Configuration
-@EnableWebSecurity(debug = true)
-@EnableMethodSecurity
+@EnableWebSecurity(debug = true) // Abilita la configurazione della sicurezza web con debug abilitato
+@EnableMethodSecurity // Abilita la sicurezza basata sui metodi
 public class WebConfig implements WebMvcConfigurer {
 
+    // Configura le regole CORS per permettere le richieste da http://localhost:4200
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -34,31 +32,34 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600);
     }
 
+    // Configura la catena di filtri di sicurezza per le richieste HTTP
     @Bean
     public SecurityFilterChain securityFilterChainWebConfig(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.formLogin(http -> http.disable()); // Disabilita il login basato su form
-        httpSecurity.csrf(http -> http.disable()); // Disabilita la protezione CSRF
+        httpSecurity.formLogin(http -> http.disable()); // Disabilita il login basato su form di Spring Security
+        httpSecurity.csrf(http -> http.disable()); // Disabilita la protezione CSRF di Spring Security
         httpSecurity.sessionManagement(http -> http.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Configura la gestione delle sessioni senza stato
         httpSecurity.cors(Customizer.withDefaults()); // Abilita la configurazione predefinita di CORS
 
-        // Autorizza l'accesso a percorsi specifici
+        // Configura le autorizzazioni per le richieste HTTP
         httpSecurity.authorizeHttpRequests(http -> {
             http.requestMatchers("/auth/register").hasAuthority("ADMIN"); // Permette l'accesso a /auth/register solo per gli utenti con autorità ADMIN
-            http.requestMatchers("/auth/**").permitAll(); // Permette l'accesso a /auth/**
-            http.anyRequest().denyAll(); // Nega l'accesso agli altri percorsi
+            http.requestMatchers("/auth/**").permitAll(); // Permette l'accesso a tutte le richieste sotto /auth/**
+            http.anyRequest().denyAll(); // Rifiuta tutte le altre richieste non specificate
         });
 
-        return httpSecurity.build();
+        return httpSecurity.build(); // Restituisce la catena di filtri di sicurezza configurata
     }
 
+    // Bean per l'encoder della password
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Configura l'encoder di password BCrypt
+        return new BCryptPasswordEncoder(); // Utilizza l'algoritmo BCrypt per l'hashing delle password
     }
 
+    // Bean per il service che gestisce gli utenti in memoria
     @Bean
     public UserDetailsService userDetailsService() {
-        // Configura un InMemoryUserDetailsManager con un utente di esempio ADMIN
+        // Configura un InMemoryUserDetailsManager con un utente amministratore predefinito
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(User.withUsername("admin_user@example.com")
                 .password(passwordEncoder().encode("admin1"))
@@ -66,6 +67,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .build());
         return manager;
     }
-
-
 }

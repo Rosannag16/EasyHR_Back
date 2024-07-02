@@ -22,48 +22,57 @@ import java.util.Optional;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-
     @Autowired
     private JwtTool jwtTool;
 
     @Autowired
     private UserService userService;
 
+    // Questo metodo viene chiamato per ogni richiesta HTTP
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Controlla solo se la richiesta non è per /auth/*
+        // Controlla se la richiesta non deve essere filtrata
         if (!shouldNotFilter(request)) {
+            // Ottiene l'header Authorization
             String authHeader = request.getHeader("Authorization");
 
+            // Controlla se l'header è presente e inizia con "Bearer "
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                throw new UnauthorizedException("Error in authorization, token missing!");
+                throw new UnauthorizedException("Errore nell'autorizzazione, token mancante!");
             }
+
+            // Estrae il token dall'header
             String token = authHeader.substring(7);
 
+            // Verifica la validità del token
             jwtTool.verifyToken(token);
 
-            // Aggiunta di questa sezione per recuperare lo user che ha l'id che si trova nel token.
-            // Serve per creare un oggetto di tipo authentication che contiene i ruoli dell'utente e inserirli nel contesto della sicurezza
+            // Ottiene l'ID utente dal token
             int userId = jwtTool.getIdFromToken(token);
 
+            // Ottiene l'utente dal service utilizzando l'ID
             Optional<User> userOptional = userService.getUtenteById(userId);
-
-            if(userOptional.isPresent()) {
+            if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
+                // Crea un oggetto Authentication per l'utente
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+                // Imposta l'oggetto Authentication nel contesto di sicurezza
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                throw new NotFoundException("User with id=" + userId + " not found");
+                throw new NotFoundException("Utente con id=" + userId + " non trovato");
             }
         }
 
+        // Prosegue con la catena dei filtri
         filterChain.doFilter(request, response);
     }
 
+    // Metodo per determinare se una richiesta non deve essere filtrata
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        // Utilizza AntPathMatcher per verificare se il percorso della servlet della richiesta corrisponde a "/auth/**"
         return new AntPathMatcher().match("/auth/**", request.getServletPath());
     }
-
 }

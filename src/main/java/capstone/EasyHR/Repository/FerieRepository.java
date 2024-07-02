@@ -9,7 +9,8 @@ import java.util.List;
 
 @Repository
 public interface FerieRepository extends JpaRepository<Ferie, Long> {
+    // Metodo per trovare tutti i permessi di un utente dato il suo ID
     List<Ferie> findByUserId(Long userId);
 
-    List<Ferie> findByStato(String stato);
+//    List<Ferie> findByStato(String stato);
 }

@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface PermessiRepository extends JpaRepository<Permesso, Long> {
+    // Metodo per trovare tutti i permessi di un utente dato il suo ID
     List<Permesso> findByUserId(Long userId);
-    List<Permesso> findByStato(String stato);
+
+//    List<Permesso> findByStato(String stato);
 }

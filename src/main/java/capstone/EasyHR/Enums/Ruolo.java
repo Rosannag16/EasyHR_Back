@@ -1,5 +1,7 @@
 package capstone.EasyHR.Enums;
 
+// Definizione dell'enumerazione per i ruoli degli utenti
 public enum Ruolo {
-    ADMIN, USER
+//    ADMIN, // Ruolo amministratore con privilegi elevati
+    USER   // Ruolo utente standard
 }
